@@ -13,7 +13,7 @@
 ## N Second day — develop requits
 
 - [ ] create `request.c/h`
-- [ ] read data from the socket (`recv()`)
+  - [ ] read data from the socket (`recv()`)
 - [ ] parse method , path, version
 - [ ] separate headers from  implementation
 
@@ -29,3 +29,24 @@
 - [ ] create `mime.c/h`
 - [ ] Determine by extension `Content-Type`
 - [ ] paste to answer
+
+
+## N fifth day — log 
+- [ ] create folder 'logs'
+- [ ] login IP client, path, status
+- [ ] log write to 'logs/access.log'
+
+
+## N sixth day — build, docs, test
+- [ ] realization 'CMakeLists.txt'
+- [ ] write the README.md file with information:
+  - how build the program
+  - how start the program
+- [ ] testing 'curl', 'browser', '404' , png ,html
+
+
+## FUTURE ?
+- [ ] 'POST' support
+- [ ] configuration (port, directory)
+- [ ] HTTPS (OpenSSL)
+- [ ] CI/CD gitlab

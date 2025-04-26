@@ -5,4 +5,8 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+int init();
+int loop();
+
+
 #endif //SERVER_H
