@@ -25,7 +25,7 @@ add_library(core STATIC
         ${SRC}
 )
 
-add_executable(miniweb ${SRC_DIR}/main.c )
+add_executable(miniweb main.c )
 
 
 target_link_libraries(miniweb PRIVATE core)
