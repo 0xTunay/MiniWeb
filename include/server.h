@@ -5,8 +5,9 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-int init();
-int loop();
+#define PORT 8080
+
+void server_init();
 
 
 #endif //SERVER_H

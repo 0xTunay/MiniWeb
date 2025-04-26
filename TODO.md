@@ -13,7 +13,7 @@
 ## N Second day — develop requits
 
 - [ ] create `request.c/h`
-  - [ ] read data from the socket (`recv()`)
+- [ ] read data from the socket (`recv()`)
 - [ ] parse method , path, version
 - [ ] separate headers from  implementation
 
