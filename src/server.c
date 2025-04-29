@@ -21,7 +21,6 @@ void server_init() {
         exit(EXIT_FAILURE);
     }
 
-
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
     server_addr.sin_port = htons(PORT);
@@ -31,5 +30,16 @@ void server_init() {
         perror("Binding error ");
         exit(EXIT_FAILURE);
     }
+    if(listen(sockfd,2) == -1){
+        perror("Error listen");
+        exit(EXIT_FAILURE);
+    }
+    printf("Server start on port: %d",PORT);
+    close(sockfd);
+
+    int clientfd;
+    struct sockaddr_in client_addr;
+    socklen_t socklen = sizeof(client_addr);
+
 
 }
