@@ -9,16 +9,27 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+int sockfd = -1;
 
-/*TODO
- * эта хуйня не закрывает порт
- */
+void handle_signal(int sig) {
+    if (sockfd = -1) {
+        printf("\n[+] Caught signal %d, shutting down...\n", sig);
+        close(sockfd);
+    }
+    exit(0);
+}
 void server_init() {
+
+    signal(SIGINT, handle_signal);
+    signal(SIGTERM, handle_signal);
+    signal(SIGHUP, handle_signal);
+
     struct sockaddr_in server_addr;
 
     int sockfd = socket(AF_INET,SOCK_STREAM,0);
@@ -47,6 +58,7 @@ void server_init() {
     }
     printf("Server start on port: %d\n",PORT);
     server_loop(sockfd);
+    close(sockfd);
 
 }
 
@@ -62,6 +74,5 @@ void server_loop(int sockfd) {
     }
     perror("Error accepting connection");
 
-    close(clientfd);
 
 }

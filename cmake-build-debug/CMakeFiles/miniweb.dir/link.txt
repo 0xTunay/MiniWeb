@@ -1,0 +1,1 @@
+/usr/bin/cc -g -Wl,--dependency-file=CMakeFiles/miniweb.dir/link.d CMakeFiles/miniweb.dir/main.c.o -o /home/tunay/CLionProjects/miniweb/miniweb  libcore.a
