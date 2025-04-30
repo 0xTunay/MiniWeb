@@ -2,7 +2,7 @@
 
 # FIRST PROJECT WITH SMART TECHNOLOGY
 
-## N First day — open the socket and launch the server
+## 30.01.2025 First day — open the socket and launch the server 
 
 - [ ] create `server.c/h` with init and loop functions
 - [ ] open the socket (`socket()`)
