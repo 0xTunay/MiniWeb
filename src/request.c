@@ -15,25 +15,32 @@
 #include <arpa/inet.h>
 
 
-int request_init(){
-    struct sockaddr_in server;
-    server.sin_family = AF_INET;
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    server.sin_port = htons(80);
+int request_init(int clientfd){
+    struct Request requests;
 
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock == -1) {
-        perror("socket");
+    char request[4096];
+
+    int received = recv(clientfd, request, sizeof(request), 0);
+    if(received == -1) {
+        perror("recv");
+        return -1;
+    }
+    printf("Request received: %s\n", request);
+    request[received] = '\0';
+
+    char *method = strtok(request, " ");
+    char *path = strtok(NULL, " ");
+    char *version = strtok(NULL, " ");
+
+    if (!method || !path || !version) {
+        perror("method/path/version not found");
         return -1;
     }
 
-    socklen_t len = sizeof(server);
-    bind(sock, (struct sockaddr *) &server, len));
+    requests.method = method;
+    requests.path = path;
+    requests.version = version;
 
-    if (connect(sock, (struct sockaddr *)&server, len) == -1) {
-        perror("connect");
-        return -1;
-    }
-    return sock;
 
+    return 0;
 }

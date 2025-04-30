@@ -8,4 +8,11 @@
 int request_init();
 
 
+struct Request {
+    char *method;
+    char *path;
+    char *version;
+
+};
+
 #endif //REQUEST_H

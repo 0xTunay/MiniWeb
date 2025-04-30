@@ -13,6 +13,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+
+
+/*TODO
+ * эта хуйня не закрывает порт
+ */
 void server_init() {
     struct sockaddr_in server_addr;
 
@@ -27,7 +32,11 @@ void server_init() {
     server_addr.sin_addr.s_addr = INADDR_ANY;
     server_addr.sin_port = htons(PORT);
 
-
+    int optval = 1;
+    if (setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&optval,sizeof(optval)) < 0) {
+        perror("Error setting socket options");
+        exit(EXIT_FAILURE);
+    }
     if(bind(sockfd, (struct sockaddr*)&server_addr,sizeof(server_addr)) < 0){
         perror("Binding error ");
         exit(EXIT_FAILURE);
@@ -48,10 +57,11 @@ void server_loop(int sockfd) {
 
     while((clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &len)) >=0){
 
+        request_init(clientfd);
         close(clientfd);
     }
     perror("Error accepting connection");
 
-    request_init();
+    close(clientfd);
 
 }
