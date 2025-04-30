@@ -8,6 +8,6 @@
 #define PORT 8080
 
 void server_init();
-
+void server_loop(int sock);
 
 #endif //SERVER_H

@@ -16,11 +16,12 @@ void server_init() {
     struct sockaddr_in server_addr;
 
     int sockfd = socket(AF_INET,SOCK_STREAM,0);
-    if(sockfd < -1) {
+    if(sockfd < 0) {
         perror("Error connection to the socket");
         exit(EXIT_FAILURE);
     }
 
+    memset(&server_addr,0,sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = INADDR_ANY;
     server_addr.sin_port = htons(PORT);
@@ -34,12 +35,19 @@ void server_init() {
         perror("Error listen");
         exit(EXIT_FAILURE);
     }
-    printf("Server start on port: %d",PORT);
-    close(sockfd);
+    printf("Server start on port: %d\n",PORT);
+    server_loop(sockfd);
 
-    int clientfd;
-    struct sockaddr_in client_addr;
-    socklen_t socklen = sizeof(client_addr);
+}
 
+void server_loop(int sockfd) {
+	int clientfd;
+	struct sockaddr_in client_addr;
+	socklen_t len = sizeof(client_addr);
 
+    while((clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &socklen)) >=0){
+
+        close(clientfd);
+    }
+    perror("Error accepting connection");
 }
