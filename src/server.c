@@ -3,6 +3,7 @@
 //
 
 #include "../include/server.h"
+#include "../include/request.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,9 +46,12 @@ void server_loop(int sockfd) {
 	struct sockaddr_in client_addr;
 	socklen_t len = sizeof(client_addr);
 
-    while((clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &socklen)) >=0){
+    while((clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &len)) >=0){
 
         close(clientfd);
     }
     perror("Error accepting connection");
+
+    request_init();
+
 }
