@@ -5,4 +5,7 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
+int request_init();
+
+
 #endif //REQUEST_H
