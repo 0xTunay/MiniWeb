@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcore.a CMakeFiles/core.dir/src/mime.c.o CMakeFiles/core.dir/src/request.c.o CMakeFiles/core.dir/src/server.c.o CMakeFiles/core.dir/src/response.c.o
-/usr/bin/ranlib libcore.a
