@@ -2,7 +2,7 @@
 
 # FIRST PROJECT WITH SMART TECHNOLOGY
 
-## N First day — open the socket and launch the server
+## 30.04.2025 First day — open the socket and launch the server
 
 - [ ] create `server.c/h` with init and loop functions
 - [ ] open the socket (`socket()`)
@@ -10,7 +10,7 @@
 - [ ] Listen for connection (`listen()`)
 - [ ] Accept clients connections  (`accept()`)
 
-## N Second day — develop requits
+## 1.05.2025 Second day — develop requits
 
 - [ ] create `request.c/h`
 - [ ] read data from the socket (`recv()`)
