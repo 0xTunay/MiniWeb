@@ -3,6 +3,9 @@
 //
 
 #include "../include/request.h"
+#include "../include/response.h"
+
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +43,7 @@ struct Request *request_init(int clientfd){
     memset(request, 0, buffer_size);
 
     while (1) {
-        int received = recv(clientfd, request+ total_bytes, buffer_size - total_bytes - 1, 0 );
+        int received = recv(clientfd, request+ total_bytes, buffer_size - total_bytes - 1, 0 ); // поговори со мноб бэби!
         if (received == -1) {
             perror("error receiving request");
             goto cleanup;
@@ -107,6 +110,15 @@ struct Request *request_init(int clientfd){
         perror("strdup error");
         goto cleanup;
     }
+
+
+    server_response res;
+    int result = init_response(clientfd,&res);
+    if (result == -1) {
+        fprintf(stderr, "init_response error\n");
+        goto cleanup;
+    }
+
     free(request);
     return req;
 cleanup:
