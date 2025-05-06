@@ -17,15 +17,15 @@
 
 
 
-struct Request *request_init(int clientfd){
+Request *request_init(int clientfd){
 
-    struct Request *req = NULL;
+    Request *req = NULL;
     int total_bytes = 0;
     int buffer_size = 1024;
     char *request = NULL;
     char *header_end = NULL;
 
-    req = malloc(sizeof(struct Request));
+    req = malloc(sizeof(Request));
     if (!req) {
         perror("malloc");
         goto cleanup;

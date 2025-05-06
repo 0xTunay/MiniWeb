@@ -5,14 +5,14 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
-int request_init();
 
-
-struct Request {
+typedef struct {
     char *method;
     char *path;
     char *version;
 
-};
+}Request;
+
+Request *request_init(int clientfd);
 
 #endif //REQUEST_H

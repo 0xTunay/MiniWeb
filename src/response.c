@@ -17,7 +17,6 @@
 int  init_response(int clientfd, server_response *response) {
 
     const char *path = "../static/index.html";
-    const char *path_error = "404";
 
     if (access(path,F_OK) == 0) {
         FILE *fp = fopen(path,"r");
@@ -54,14 +53,18 @@ int  init_response(int clientfd, server_response *response) {
         fclose(fp);
         response->content = buffer;
 
-        const char accept_header[256];
-        snprintf(accept_header,sizeof(accept_header),
-                "HTTP/1.1 200 OK\r\nContent-Length: %ld\r\nContent-Type: text/html\r\n\r\n");
-
+        char accept_header[256];
+        snprintf(accept_header, sizeof(accept_header),
+                 "HTTP/1.1 200 OK\r\nContent-Length: %ld\r\nContent-Type: text/html\r\n\r\n");
+        int so_fine = send(clientfd, accept_header, strlen(accept_header), 0);
+        if (so_fine == -1) {
+            perror("send");
+            return -1;
+        }
         int so_good = send(clientfd, response->content, response->content_length, 0);
         if (so_good == -1) {
             perror("send");
-            return 1;
+            return -1;
         }
 
         response->status = 200;
