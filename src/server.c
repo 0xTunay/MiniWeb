@@ -18,7 +18,7 @@
 int sockfd = -1;
 
 void handle_signal(int sig) {
-    if (sockfd = -1) {
+    if (sockfd == -1) {
         printf("\n[+] Caught signal %d, shutting down...\n", sig);
         close(sockfd);
     }
@@ -32,7 +32,7 @@ void server_init() {
 
     struct sockaddr_in server_addr;
 
-    int sockfd = socket(AF_INET,SOCK_STREAM,0);
+    sockfd = socket(AF_INET,SOCK_STREAM,0);
     if(sockfd < 0) {
         perror("Error connection to the socket");
         exit(EXIT_FAILURE);
@@ -58,20 +58,20 @@ void server_init() {
     }
     printf("Server start on port: %d\n",PORT);
     server_loop(sockfd);
-    close(sockfd);
 
 }
 
 void server_loop(int sockfd) {
-	int clientfd;
-	struct sockaddr_in client_addr;
-	socklen_t len = sizeof(client_addr);
-
-    while((clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &len)) >=0){
-
+    while (1) {
+        int clientfd = accept(sockfd, ...);
+        if (clientfd < 0) {
+            perror("Error accepting connection");
+            break;
+        }
+        printf("New client connected, fd: %d\n", clientfd);
         request_init(clientfd);
         close(clientfd);
     }
-    perror("Error accepting connection");
-
+    close(sockfd);
+	sockfd = -1;
 }
