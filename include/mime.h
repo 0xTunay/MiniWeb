@@ -7,7 +7,7 @@
 #include <stdio.h>
 
 
-int get_type(const char *extension);
+const char * get_type(const char *extension);
 
 
 #endif //MIME_H
