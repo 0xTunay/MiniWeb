@@ -32,7 +32,7 @@ int  init_response(int clientfd, server_response *response) {
             fclose(fp);
             return -1;
         } // super technology
-        if (size_file >= LONG_MAX) {
+            if (size_file >= LONG_MAX) {
             fprintf(stderr, "File size too large\n");
             fclose(fp);
             return -1;
