@@ -5,7 +5,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#define PORT 8080
+#define PORT 8081
 
 void server_init();
 void server_loop(int sock);
