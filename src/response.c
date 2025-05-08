@@ -16,7 +16,7 @@
 
 int  init_response(int clientfd, server_response *response) {
 
-    const char *path = "../static/index.html";
+    const char *path = "/home/tunay/CLionProjects/miniweb/static/index.html";
 
     if (access(path,F_OK) == 0) {
         FILE *fp = fopen(path,"r");
@@ -63,8 +63,8 @@ int  init_response(int clientfd, server_response *response) {
 
         char accept_header[256];
         snprintf(accept_header, sizeof(accept_header),
-                "HTTP/1.1 200 OK\r\nContent-Length: %ld\r\nContent-Type: text/html\r\n\r\n",
-                response->content_length, mime_type);
+                 "HTTP/1.1 200 OK\r\nContent-Length: %ld\r\nContent-Type: %s\r\n\r\n",
+                 response->content_length, mime_type);
         int so_fine = send(clientfd, accept_header, strlen(accept_header), 0);
         if (so_fine == -1) {
             perror("send");
