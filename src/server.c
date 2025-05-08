@@ -18,7 +18,7 @@
 int sockfd = -1;
 
 void handle_signal(int sig) {
-    if (sockfd == -1) {
+    if (sockfd >= 0) {
         printf("\n[+] Caught signal %d, shutting down...\n", sig);
         close(sockfd);
     }
@@ -63,7 +63,7 @@ void server_init() {
 
 void server_loop(int sockfd) {
     while (1) {
-        int clientfd = accept(sockfd, ...);
+        int clientfd = accept(sockfd, NULL,NULL);
         if (clientfd < 0) {
             perror("Error accepting connection");
             break;
