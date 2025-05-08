@@ -44,29 +44,24 @@ Request *request_init(int clientfd){
 
     while (1) {
         int received = recv(clientfd, request+ total_bytes, buffer_size - total_bytes - 1, 0 ); // поговори со мноб бэби!
-        if (received == -1) {
-            perror("error receiving request");
+        if (received <= 0) {
+			if(received == -1) perror("recv error");
+			else fprintf(stderr, "recv error\n");
             goto cleanup;
         }
-        if (received == 0) {
-            fprintf(stderr, "error receiving request\n");
-            goto cleanup;
-        }
+
 
         total_bytes += received;
         request[total_bytes] = '\0';
+		if(strstr(request, "\r\n\r\n")) break;
 
-        header_end = strtok(request, "\r\n\r\n");
-        if (header_end) {
-            break;
-        }
         if (buffer_size - total_bytes < 128) {
             buffer_size *= 2;
             if (buffer_size < 4098) {
                 fprintf(stderr, "buffer_size is too small\n");
                 goto cleanup;
             }
-            char *new_request =  realloc(request, sizeof(char) * buffer_size);
+            char *new_request =  realloc(request,  buffer_size);
             if (!new_request) {
                 perror("realloc");
                 goto cleanup;
@@ -75,20 +70,26 @@ Request *request_init(int clientfd){
             memset(request + total_bytes, 0, buffer_size - total_bytes);
         }
     }
-    char *line = NULL;
-    line = strtok(request, "\r\n");
-    if (!line) {
-        fprintf(stderr, "invalid http request: no first line\n");
+
+    char *first_line_end = strstr(request, "\r\n\r\n");
+
+    if(!first_line_end){
+        fprintf(stderr, "error parsing request\n");
         goto cleanup;
     }
-    printf("Request received: %s\n", request);
-
-    char *method = strtok(request, " ");
-    char *path = strtok(NULL, " ");
-    char *version = strtok(NULL, " ");
+    size_t first_line_len = first_line_end - request;
+    char *first_line = strndup(request, first_line_len);
+    if(!first_line){
+        perror("strndup");
+        goto cleanup;
+    }
+	char *method = strtok(first_line, " ");
+	char *path = strtok(NULL, " ");
+	char *version = strtok(NULL, " ");
 
     if (!method || !path || !version) {
         perror("method/path/version not found");
+		free(first_line);
         goto cleanup;
     }
 
@@ -112,20 +113,23 @@ Request *request_init(int clientfd){
     }
 
 
-    server_response res;
-    int result = init_response(clientfd,&res);
-    if (result == -1) {
+	server_response res;
+    if (init_response(clientfd, &res) < 0) {
         fprintf(stderr, "init_response error\n");
+        free(res.content); // Если content выделен
         goto cleanup;
     }
 
     free(request);
+	free(first_line);
     return req;
 cleanup:
     free(request);
-    free(req);
-    free(req->method);
-    free(req->path);
-    free(req->version);
+    if (req) {
+        free(req->method);
+        free(req->path);
+        free(req->version);
+        free(req);
+    }
     return NULL;
 }
