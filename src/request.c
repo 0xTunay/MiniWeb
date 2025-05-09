@@ -71,7 +71,7 @@ Request *request_init(int clientfd){
         }
     }
 
-    char *first_line_end = strstr(request, "\r\n\r\n");
+    char *first_line_end = strstr(request, "\r\n");
 
     if(!first_line_end){
         fprintf(stderr, "error parsing request\n");

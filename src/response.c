@@ -16,7 +16,7 @@
 
 int  init_response(int clientfd, server_response *response) {
 
-    const char *path = "/home/tunay/CLionProjects/miniweb/static/index.html";
+    const char *path = "./static/index.html";
 
     if (access(path,F_OK) == 0) {
         FILE *fp = fopen(path,"r");
@@ -43,15 +43,14 @@ int  init_response(int clientfd, server_response *response) {
             perror("malloc");
             return -1;
         }
-        size_t bytes_read = fread(buffer,1,size_file,fp);
+        size_t bytes_read = fread(buffer, 1, size_file, fp);
         if (bytes_read != size_file) {
-            perror("fread");
+            fprintf(stderr, "Read %zu bytes, expected %ld\n", bytes_read, size_file);
             free(buffer);
             fclose(fp);
             return -1;
         }
-        fclose(fp);
-        response->content = buffer;
+        response->content_length = bytes_read;
 
         const char *extention = strrchr(path, '.');
         if (extention) {
