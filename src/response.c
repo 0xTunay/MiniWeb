@@ -5,6 +5,7 @@
 #include "../include/response.h"
 #include "../include/mime.h"
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,13 +63,39 @@ int  init_response(int clientfd, server_response *response) {
 
         char accept_header[256];
         snprintf(accept_header, sizeof(accept_header),
-                 "HTTP/1.1 200 OK\r\nContent-Length: %ld\r\nContent-Type: %s\r\n\r\n",
-                 response->content_length, mime_type);
-        int so_fine = send(clientfd, accept_header, strlen(accept_header), 0);
+                "HTTP/1.1 200 OK\r\nContent-Length: %ld\r\nContent-Type: %s\r\n\r\n",
+                response->content_length, mime_type);
+        printf("sending header %s", accept_header);
+        size_t total_send = 0;
+        size_t header_len = strlen(accept_header);
+        while(total_send < header_len){
+
+            int sent = send(clientfd, accept_header + total_send, header_len - total_send, 0);
+            if(send == -1){
+                perror("send header");
+                return -1;
+
+
+            }
+            total_send += send;
+        }
+        printf("Sending %zu bytes of content: %.*s\n", response->content_length, (int)response->content_length, response->content);
+        total_send = 0;
+        while (total_send < response->content_length) {
+            int sent = send(clientfd, response->content + total_send, response->content_length - total_send, 0);
+            if (sent == -1) {
+                perror("send content");
+                return -1;
+            }
+            total_send += sent;
+        }            int so_fine = send(clientfd, accept_header, strlen(accept_header), 0);
         if (so_fine == -1) {
             perror("send");
             return -1;
         }
+
+
+
         int so_good = send(clientfd, response->content, response->content_length, 0);
         if (so_good == -1) {
             perror("send");
