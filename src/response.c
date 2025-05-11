@@ -19,7 +19,7 @@
 #include <sys/socket.h>
 
 
-int  init_response(int clientfd, server_response *response) {
+int init_response(int clientfd, server_response *response) {
    const char *path = "./static/index.html";
 
    if (access(path,F_OK) == 0) {
@@ -91,14 +91,7 @@ int  init_response(int clientfd, server_response *response) {
                return -1;
            }
            total_send += sent;
-       }            int so_fine = send(clientfd, accept_header, strlen(accept_header), 0);
-       if (so_fine == -1) {
-           perror("send");
-           return -1;
        }
-
-       int so_good = send(clientfd, response->content, response->content_length, 0);
-       if (so_good == -1) {
            perror("send");
            return -1;
        }

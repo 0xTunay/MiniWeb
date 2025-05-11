@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <signal.h>
 
+#include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -63,13 +64,24 @@ void server_init() {
 
 void server_loop(int sockfd) {
     while (1) {
-        int clientfd = accept(sockfd, NULL,NULL);
+/*
+	struct sockaddr_in client_addr;
+	socklen_t len = sizeof(client_addr);
+    int clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &len);
+	if(clientfd < 0) {
+       perror("Error accepting connection");
+		break;
+	}
+	char client_ip[INET_ADDRSTRLEN];
+	inet_ntop (AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);
+*/
+        clientfd = accept(sockfd, NULL,NULL);
         if (clientfd < 0) {
             perror("Error accepting connection");
             break;
         }
         printf("New client connected, fd: %d\n", clientfd);
-        request_init(clientfd);
+        request_init(clientfd, client_ip);
         close(clientfd);
     }
     close(sockfd);

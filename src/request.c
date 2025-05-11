@@ -18,7 +18,6 @@
 
 
 Request *request_init(int clientfd){
-
     Request *req = NULL;
     int total_bytes = 0;
     int buffer_size = 1024;
@@ -113,13 +112,22 @@ Request *request_init(int clientfd){
     }
 
 
-	server_response res;
-    if (init_response(clientfd, &res) < 0) {
+	server_response res = {0};
+    if (init_response(clientfd, req->path, &res) < 0) {
         fprintf(stderr, "init_response error\n");
-        free(res.content); // Если content выделен
+        free(res.content);
         goto cleanup;
     }
-
+    /*
+	printf("Attempting to log: %s %s %d\n", client_ip, req->path, res.status);
+	FILE *log_file = fopen("./logs/log.txt", "a");
+		if (log_file) {
+  		  fprintf(log_file, "%s %s %d\n", client_ip, req->path, res.status);
+   		 fclose(log_file);
+		} else {
+  			  perror("Failed to open log file");
+	}
+        */
     free(request);
 	free(first_line);
     return req;
