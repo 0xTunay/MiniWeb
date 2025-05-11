@@ -8,7 +8,7 @@ HTTP/1.0 RELEASE
 
 **miniweb** — this simple HTTP server, write on C lang.
 
-## Сборка
+## Build
 
 for build program you need install ```cmake``` and ```gcc```
 
