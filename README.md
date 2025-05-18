@@ -72,6 +72,18 @@ miniweb/
 │   ├── index.html
 ```
 
+## Doxygen
+
+For create doxygen file you need build doxygen
+```bash
+doxygen -g Doxyfile
+```
+after that start this file
+
+```bash 
+doxygen Doxyfile
+```
+
 ## Future
 
 - [ ] support method  `POST`
