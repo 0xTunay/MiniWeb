@@ -6,10 +6,14 @@
 #define REQUEST_H
 
 
+/**
+ * @struct Request
+ * @brief initialization request struct
+ */
 typedef struct {
-    char *method;
-    char *path;
-    char *version;
+    char *method; ///< method request
+    char *path; ///< path to request
+    char *version; ///< version request
 
 }Request;
 
