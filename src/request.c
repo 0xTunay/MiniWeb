@@ -2,6 +2,19 @@
 // Created by tunay on 4/23/25.
 //
 
+/*!
+ * @file request.c
+ * @author Tunay
+ * @date 2025-04-23
+* @details Implement a user request initialization function that:
+*    - Allocates memory for receiving data.
+*    - Receives data from a socket.
+*    - Copies the received data into a structure.
+*    - Frees the allocated memory.
+* @see request.h response.h
+ */
+
+
 #include "../include/request.h"
 #include "../include/response.h"
 
@@ -16,13 +29,18 @@
 #include <sys/socket.h>
 
 
-
+/*!
+ *
+ * @param clientfd descriptor server socket
+ */
 Request *request_init(int clientfd){
+    /*!
+     * @details init default value
+     */
     Request *req = NULL;
     int total_bytes = 0;
     int buffer_size = 1024;
     char *request = NULL;
-    char *header_end = NULL;
 
     req = malloc(sizeof(Request));
     if (!req) {
@@ -40,7 +58,12 @@ Request *request_init(int clientfd){
         goto cleanup;
     }
     memset(request, 0, buffer_size);
-
+    /*!
+     *
+     * @details  read request through recv from the socket
+     *      infinity cycle read data until we receive a complete HTTP request
+     *
+     */
     while (1) {
         int received = recv(clientfd, request+ total_bytes, buffer_size - total_bytes - 1, 0 ); // поговори со мноб бэби!
         if (received <= 0) {
@@ -48,12 +71,12 @@ Request *request_init(int clientfd){
 			else fprintf(stderr, "recv error\n");
             goto cleanup;
         }
-
-
+        /*!
+         * @details if buffer size less 128, time to expand
+         */
         total_bytes += received;
         request[total_bytes] = '\0';
 		if(strstr(request, "\r\n\r\n")) break;
-
         if (buffer_size - total_bytes < 128) {
             buffer_size *= 2;
             if (buffer_size < 4098) {
@@ -76,6 +99,10 @@ Request *request_init(int clientfd){
         fprintf(stderr, "error parsing request\n");
         goto cleanup;
     }
+
+    /*!
+     * @details take first line HTTP request and copy that separate for parse into mether,path,version
+     */
     size_t first_line_len = first_line_end - request;
     char *first_line = strndup(request, first_line_len);
     if(!first_line){
@@ -92,7 +119,9 @@ Request *request_init(int clientfd){
         goto cleanup;
     }
 
-    /* copy to struct */
+    /*!
+     * @details copy to struct
+     */
 
     req->method = strdup(method);
     if (!req->method) {
@@ -113,7 +142,7 @@ Request *request_init(int clientfd){
 
 
 	server_response res = {0};
-    if (init_response(clientfd, req->path, &res) < 0) {
+    if (init_response(clientfd, &res) < 0) {
         fprintf(stderr, "init_response error\n");
         free(res.content);
         goto cleanup;
@@ -128,6 +157,10 @@ Request *request_init(int clientfd){
   			  perror("Failed to open log file");
 	}
         */
+
+    /*!
+     * @details free all used memory
+     */
     free(request);
 	free(first_line);
     return req;

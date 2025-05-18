@@ -1,7 +1,9 @@
-//
-// Created by tunay on 4/23/25.
-//
-
+/*!
+* @file server.c
+ * @brief realization server for processing client connections
+ * @author tunay
+ * @date 2025-04-23
+ */
 #include "../include/server.h"
 #include "../include/request.h"
 
@@ -16,8 +18,17 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+/*!
+ * @brief global desriptor socker server
+ * @note inicialize -1, update in server_init()
+ */
 int sockfd = -1;
 
+
+/*!
+ *
+ * @param sig number signal (for example SIGINT, SIGTERM, SIGHUG)
+ */
 void handle_signal(int sig) {
     if (sockfd >= 0) {
         printf("\n[+] Caught signal %d, shutting down...\n", sig);
@@ -25,7 +36,14 @@ void handle_signal(int sig) {
     }
     exit(0);
 }
-void server_init() {
+
+/*!
+ * @brief initialization server
+ * @details create socker configures its parametrs, connection to port and puts the socket into listening mode
+        register signal handlers for SIGINT, SIGTERM, SIGHUP
+    @note exit program with error if socket, configuration or listener is not created
+ */
+void server_init(void) {
 
     signal(SIGINT, handle_signal);
     signal(SIGTERM, handle_signal);
@@ -40,9 +58,9 @@ void server_init() {
     }
 
     memset(&server_addr,0,sizeof(server_addr));
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = INADDR_ANY; /// ??
-    server_addr.sin_port = htons(PORT);
+    server_addr.sin_family = AF_INET; ///< IPv4 protocol
+    server_addr.sin_addr.s_addr = INADDR_ANY; ///< accept connection any interface
+    server_addr.sin_port = htons(PORT); ///< server port
 
     int optval = 1;
     if (setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&optval,sizeof(optval)) < 0) {
@@ -62,9 +80,20 @@ void server_init() {
 
 }
 
+
+/*!
+ * @brief main server cycle for processing client connections
+ * @param sockfd descriptor server socket
+ * @details accept incoming connections from client initialization request through request_init()
+ *          and close server socket after processting
+ *
+ *@note exit the loop if an error occurs with accept(), after which the server socket is closed
+ *
+ */
+
 void server_loop(int sockfd) {
     while (1) {
-/*
+
 	struct sockaddr_in client_addr;
 	socklen_t len = sizeof(client_addr);
     int clientfd = accept(sockfd, (struct sockaddr*)&client_addr, &len);
@@ -74,14 +103,14 @@ void server_loop(int sockfd) {
 	}
 	char client_ip[INET_ADDRSTRLEN];
 	inet_ntop (AF_INET, &client_addr.sin_addr, client_ip, INET_ADDRSTRLEN);
-*/
+
         clientfd = accept(sockfd, NULL,NULL);
         if (clientfd < 0) {
             perror("Error accepting connection");
             break;
         }
         printf("New client connected, fd: %d\n", clientfd);
-        request_init(clientfd, client_ip);
+        request_init(clientfd);
         close(clientfd);
     }
     close(sockfd);

@@ -1,7 +1,11 @@
 //
 // Created by tunay on 4/23/25.
 //
-
+/*!
+ * @author Tunay
+ * @ 2025-04-23
+ * @details
+ */
 
 #include "../include/response.h"
 #include "../include/mime.h"
@@ -18,6 +22,17 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
+/*!
+ * @brief Initializes and sends an HTTP response to the client over a socket.
+ *
+ * This function attempts to serve a static file located at "./static/index.html".
+ * If the file exists, it reads its contents, constructs HTTP headers with appropriate
+ * Content-Type and Content-Length, and sends the response to the client via the given socket.
+ * If the file does not exist, it sends a "404 Not Found" response instead.
+ *
+ * It also populates the provided `server_response` structure with status code, content type,
+ * content length, and content pointer.
+ */
 
 int init_response(int clientfd, server_response *response) {
    const char *path = "./static/index.html";
@@ -75,12 +90,12 @@ int init_response(int clientfd, server_response *response) {
 
 
            int sent = send(clientfd, accept_header + total_send, header_len - total_send, 0);
-           if(send == -1){
+           if(sent == -1){
                perror("send header");
                return -1;
 
            }
-           total_send += send;
+           total_send += sent;
        }
        printf("Sending %zu bytes of content: %.*s\n", response->content_length, (int)response->content_length, response->content);
        total_send = 0;
@@ -92,14 +107,11 @@ int init_response(int clientfd, server_response *response) {
            }
            total_send += sent;
        }
-           perror("send");
-           return -1;
-       }
+
 
        response->status = 200;
        response->content_length = size_file;
        strcpy(response->content_type,mime_type);
-       strcpy(response->content_type,"text/html");
 
    } else {
        const char *not_found = "HTTP/1.1 404 Not Found\r\n"
@@ -119,5 +131,4 @@ int init_response(int clientfd, server_response *response) {
            return 1;
        }
    }
-   return 0;
 }
